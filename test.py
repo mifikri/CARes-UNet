@@ -14,9 +14,9 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--num_workers', type=int, default=0,
                     help='number of workers in dataloader. In windows, set num_workers=0')
-parser.add_argument('--test_img_path', type=str, default=r'.\Test-Image',
+parser.add_argument('--test_img_path', type=str, default='./Test-Image',
                     help='images path for testing')
-parser.add_argument('--test_msk_path', type=str, default=r'.\Test-Mask',
+parser.add_argument('--test_msk_path', type=str, default='./Test-Mask',
                     help='images mask path for testing')
 
 parser.add_argument('--pretrained_model', type=str,default='',

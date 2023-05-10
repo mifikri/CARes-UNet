@@ -11,6 +11,7 @@ from optimizer import RangerV2
 from utils import dice_coef_2d
 from loss import DiceWithBceLoss
 import argparse
+from torch.utils.tensorboard import SummaryWriter
 
 parser = argparse.ArgumentParser()
 
@@ -32,17 +33,19 @@ parser.add_argument('--data_augmentation', type=bool, default=False)
 
 parser.add_argument('--num_workers', type=int, default=0,
                     help='number of workers in dataloader. In windows, set num_workers=0')
-parser.add_argument('--train_img_path', type=str, default=r'.\Train-Image',
+parser.add_argument('--train_img_path', type=str, default='./Train-Image',
                     help='images path for training')
-parser.add_argument('--train_msk_path', type=str, default=r'.\Train-Mask',
+parser.add_argument('--train_msk_path', type=str, default='./Train-Mask',
                     help='images mask path for training')
-parser.add_argument('--semi_img_path', type=str, default=r'',
+parser.add_argument('--semi_img_path', type=str, default='',
                     help='images path for training with fake labels')
-parser.add_argument('--semi_msk_path', type=str, default='Pos-Mask',
+parser.add_argument('--semi_msk_path', type=str, default='./Pos-Mask',
                     help='images mask for training with fake labels')
 parser.add_argument('--optimizer_type', type=str, default='Ranger',
                     help='type of optimizer')
 parser.add_argument('--pretrained', type=bool, default=False)
+parser.add_argument('--model_type', type=str, default='semiCARes_Unet',
+                    help='type of model')
 
 parser.add_argument('--pretrained_model', type=str,default='', 
                     help='pretrained base model')
@@ -57,11 +60,19 @@ parser.add_argument('--save_folder',type=str, default='./',
 opt = parser.parse_args()
 
 if opt.data_augmentation:
-    train_transform = transforms.Compose([transforms.RandomHorizontalFlip(), 
-                                        transforms.RandomVerticalFlip(),
-                                        transforms.RandomRotation(90),
-                                        transforms.ToTensor()
-                                        ])
+    train_transform = transforms.Compose([transforms.RandomHorizontalFlip(p=0.6),
+                                          transforms.RandomVerticalFlip(p=0.6),
+                                          transforms.RandomRotation(90),
+                                          transforms.GaussianBlur(kernel_size=7),
+                                          transforms.CenterCrop((200,100)),
+                                          transforms.ColorJitter(
+                                            brightness=0.1*torch.randn(1),
+                                            contrast=0.1*torch.randn(1),
+                                            saturation=0.1*torch.randn(1),
+                                            hue=0.1*torch.randn(1)),
+                                        #   transforms.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225]),
+                                          transforms.ToTensor()
+                                          ])
 else:
     train_transform = transforms.Compose([transforms.ToTensor()])
 
@@ -107,6 +118,8 @@ print('optimizer:',opt.optimizer_type)
 
 prev_time = datetime.now()
 
+writer = SummaryWriter()
+
 for epo in range(opt.start_iter, epo_num):
     train_loss = 0
     train_dice = 0
@@ -151,6 +164,10 @@ for epo in range(opt.start_iter, epo_num):
         torch.save(model.state_dict(), save_path)
         print("model_copy is saved !")
 
+    writer.add_scalar("Semi Loss/train", train_loss / len(train_dataloader), epo)
+    writer.add_scalar("Semi Dice/train", train_dice / len(train_dataloader), epo)
+
+writer.flush()
 
 
 

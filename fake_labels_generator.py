@@ -21,7 +21,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--model_type', type=str, default='U_net',
+parser.add_argument('--model_type', type=str, default='Res_Unet',
                      help='type of model')
 parser.add_argument('--model_path', type=str, default=r'',
                      help='path of supervised model')

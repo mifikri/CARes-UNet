@@ -1,0 +1,20 @@
+root@fikri-G7-7588:~/private/kuliah/computer_vision/group_project/CARes-UNet# python test.py --pretrained_model models/supervised_CARes_Unet_epoch_1200.pth 
+models/supervised_CARes_Unet_epoch_1200.pth
+test_loss: 0.8442449371019999
+test_dice: 0.7041684711972872
+
+root@fikri-G7-7588:~/private/kuliah/computer_vision/group_project/CARes-UNet# python test.py --pretrained_model semi_models/semi_modelssemi_supervised_semiCARes_Unet_epoch_1200.pth 
+semi_models/semi_modelssemi_supervised_semiCARes_Unet_epoch_1200.pth
+test_loss: 0.8392145385344824
+test_dice: 0.7179724052548409
+
+-------------
+root@fikri-G7-7588:~/private/kuliah/computer_vision/group_project/CARes-UNet# python test.py --pretrained_model models_dcn/supervised_CARes_Unet_epoch_1100.pth 
+models_dcn/supervised_CARes_Unet_epoch_1100.pth
+test_loss: 0.8379464795192083
+test_dice: 0.7237935128311316
+
+root@fikri-G7-7588:~/private/kuliah/computer_vision/group_project/CARes-UNet# python test.py --pretrained_model semi_models_dcn/semi_supervised_semiCARes_Unet_epoch_390.pth 
+semi_models_dcn/semi_supervised_semiCARes_Unet_epoch_390.pth
+test_loss: 0.8323807381093502
+test_dice: 0.7377868468562762

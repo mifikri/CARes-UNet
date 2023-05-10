@@ -3,6 +3,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 import random
 import torch
+import numpy as np
 
 class MyDataset(Dataset):
     def __init__(self,img_path,mask_path, transform=None):
@@ -16,6 +17,10 @@ class MyDataset(Dataset):
         img_name = os.listdir(self.img_path)[idx]
         img = Image.open(os.path.join(self.img_path,img_name)).convert('L')
         img = img.resize((256, 256),Image.ANTIALIAS)
+        # img = np.array(img).astype(np.float32)
+        # img /= 255.0
+        # img -= np.array([0.485, 0.456, 0.406]).reshape(3, 1, 1)
+        # img /= np.array([0.229, 0.224, 0.225]).reshape(3, 1, 1)
         seed = random.randint(0, 4294967295)
         random.seed(seed)
         img = self.transform(img)    
